@@ -25,14 +25,14 @@
     ² Department of Mathematical Sciences, University of Copenhagen, \
     #super[†] #link("bjarke.hautop@gmail.com")
   ],
-  keywords: "R, causal inference, software",
-  logo: circle(image("favicon.pdf"), fill: white, inset: -10pt),
+  keywords: "R package, causal inference",
+  logo: image("logo_backup.svg", width: 130%),
 )
 
 #columns(2,[
 
   #pop.column-box(heading: "Motivation")[
-    - *Historically* users need to use adjacency matrices, edge lists, or general-purpose packages like `igraph`.  
+    - *Historically* users need to use adjacency matrices, edge lists, or general-purpose packages like `igraph`.
       - Writing a graph from an adjacency matrix is like writing a novel in binary: possible, but not fun.
     - *`caugi` provides:* a _causality-first_ graph package that emphasizes performance, flexibility, and readable syntax for causal graphs.
   ]
@@ -44,7 +44,7 @@
       cg <- caugi(
         A %-->% B + C,
         B %-->% D,
-        C %-->% D,
+        C %-->% D,#colbreak()
         class = "DAG"
       )
       plot(cg)
@@ -79,15 +79,28 @@
   #pop.column-box(heading: "Benchmarks")[
     We benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm` and `igraph` for common graph queries on randomly generated DAGs of varying sizes.
   
-  Find example with long running time instead of these sub 1sec examples?
+  #image("parameterized-benchmark-parents-children.png", width: 100%)
 
-  Insert images ...
+  #image("benchmark-ancestors-decendants.png", width: 60%)
 
   ]
-  #v(1fr)
-  #pop.column-box(heading: "Contact")[
+  #pop.column-box(heading: "Contact", stretch-to-next: true)[
     - Pkgdown site: #link("https://caugi.org/")[caugi.org]
-
+    - GitHub: #link("https://github.com/frederikfabriciusbjerre/caugi/")[frederikfabriciusbjerre/caugi]
+    #set align(center)
     #image("qr-url.pdf", width: 50%)
   ]
 ])
+
+#pop.bottom-box(
+	stack(
+    dir: ltr,
+    h(0.5fr),
+		image(height: 120pt, "eurocim-icon.gif"),
+    h(1fr),
+		image(height: 120pt, "ku-logo.png"),
+    h(1fr),
+		image("smart-biomed.png", height: 120pt),
+    h(0.5fr)
+	)
+)
