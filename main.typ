@@ -32,9 +32,19 @@
 #columns(2,[
 
   #pop.column-box(heading: "Motivation")[
-    - *Historically* users need to use adjacency matrices, edge lists, or general-purpose packages like `igraph`.
-      - Writing a graph from an adjacency matrix is like writing a novel in binary: possible, but not fun.
-    - *`caugi` provides:* a _causality-first_ graph package that emphasizes performance, flexibility, and readable syntax for causal graphs.
+    - Existing packages use low-level representations (e.g., adjacency matrices) and are not specialized for causal graphs.
+    - *Goal:* provide a graph interface that is expressive,
+      safe, and efficient for causal inference.
+  ]
+
+  #pop.column-box(heading: "Key Contributions")[
+    - *High-performance backend:* Rust implementation with efficient graph
+      traversal.
+    - *Type-safe graph classes:* Enforce DAG, PDAG, ADMG,
+      UG constraints at the graph level.
+    - *Expressive syntax:* Compose graphs with concise R formulas.
+    - *Scalable queries:* Efficient evaluation of ancestry and neighborhood
+      relations in large graphs.
   ]
 
   #pop.column-box(heading: "Basic Usage")[
@@ -44,7 +54,7 @@
       cg <- caugi(
         A %-->% B + C,
         B %-->% D,
-        C %-->% D,#colbreak()
+        C %-->% D,
         class = "DAG"
       )
       plot(cg)
@@ -54,27 +64,32 @@
     ])
   ]
 
-  #pop.column-box(heading: "Querying and metrics")[
-    - *Relational queries*: parents(), ancestors(), neighbors(), etc.  
-    - *Structural queries*: is_acyclic(), is_cpdag(), etc.  
-    - *Graph manipulations*: add_edge(), remove_node(), etc.  
-    - *Graph metrics*: shd(), aid(), etc.  
+  #pop.column-box(heading: "Querying and Metrics")[
+    - *Relational queries*: `parents()`, `ancestors()`, `neighbors()`, etc.  
+    - *Structural queries*: `is_acyclic()`, `is_cpdag()`, etc.  
+    - *Causal queries*: `adjustment_set()`, `d_separated()`, etc.  
+    - *Graph metrics*: `shd()`, `aid()`, etc.
   ]
 
-  #pop.column-box(heading: "How it works")[
-    - *Backend*: Rust implementation for speed and safety.  
-    - *Graph storage*: Compressed Sparse Row (CSR) format.  
-      - Fast queries; slower graph mutations compared to other formats.  
-    - *Result*: Flexible and highly efficient causal graph querying in R.
+  #pop.column-box(heading: "How it Works")[
+    - *Backend:* Rust for memory safety and performance.
+
+    - *Storage:* Compressed Sparse Row (CSR)
+      - Memory-efficient for sparse graphs
+      - Direct slice access #sym.arrow $$O(1)$$ adjacency lookup
+
+    - *Immutable + lazy rebuild:*  
+      - Rebuilds in $$O(|V| + |E|)$$ on query after graph modification.
+
+    - *Result:* Fast, predictable queries with consistent graph state.
   ]
 
-  #pop.column-box(heading: "Why caugi?")[
-    - *Graph-class safe:* Think type safety, but for graphs.
-      - Supports DAGs, PDAGs, ADMGs, UGs, and unknown graphs.
-      - Trying to add an edge to a DAG that would create a cycle will throw an error.
-    - *Performance:* Fast querying of large graphs.
-    - *Intuitive syntax:* Express edges as simple R formulas, e.g., ```R A %<->% B + C```.
+  #pop.column-box(heading: "Graph-class Safe", stretch-to-next: true)[
+    - Think type safety, but for graphs.
+    - Supports DAGs, PDAGs, ADMGs, UGs, and unknown graphs.
+    - Adding edges that violate class constraints results in errors.
   ]
+
   #colbreak()
   #pop.column-box(heading: "Benchmarks")[
     We benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm` and `igraph` for common graph queries on randomly generated DAGs of varying sizes.
