@@ -3,7 +3,7 @@
 #let spacing = 1.2em
 #set page("a0", margin: 1.5cm)
 #let my-layout = pop.layout-a0 + (
-  body-size: 38pt
+  body-size: 33pt
 )
 
 #pop.set-poster-layout(my-layout)
@@ -37,6 +37,7 @@
 
   #pop.column-box(heading: "Motivation")[
     - Existing packages use low-level representations (e.g., adjacency matrices) and are not specialized for causal graphs.
+    - Causal workflows often jump between graph objects, adjacency matrices, and package-specific APIs.
     - *Goal:* provide a graph interface that is expressive,
       safe, and efficient for causal inference.
   ]
@@ -64,8 +65,15 @@
       plot(cg)
       ```
       #colbreak()
-      #image("dag.png", width: 80%)
+      #image("dag.png", width: 60%)
     ])
+  ]
+
+  #pop.column-box(heading: "Typical Workflow")[
+    - Build the graph once using a formula that mirrors the causal structure.
+    - Assign a graph class to enforce the right structural constraints from the start.
+    - Run repeated queries such as ancestry, neighborhoods, and adjustment sets.
+    - Export to common ecosystems when you need to compare with existing tooling.
   ]
 
   #pop.column-box(heading: "Querying and Metrics")[
@@ -75,7 +83,7 @@
     - *Graph metrics*: `shd()`, `aid()`, etc.
   ]
 
-  #pop.column-box(heading: "How it Works")[
+  #pop.column-box(heading: "How it Works", stretch-to-next: true)[
     - *Backend:* Rust for memory safety and performance.
 
     - *Storage:* Compressed Sparse Row (CSR)
@@ -87,17 +95,21 @@
 
     - *Result:* Fast, predictable queries with consistent graph state.
   ]
+  
+  #colbreak()
 
-  #pop.column-box(heading: "Graph-class Safe", stretch-to-next: true)[
+  #pop.column-box(heading: "Graph-class Safe")[
     - Think type safety, but for graphs.
     - Supports DAGs, PDAGs, ADMGs, UGs, and unknown graphs.
-    - Adding edges that violate class constraints results in errors.
+    - All graph modifications are checked against class constraints.
+      - E.g., adding an edge that creates a cycle in a DAG is prevented.
+    - Ensures reliable, consistent graph state throughout analysis.
   ]
 
-  #colbreak()
   #pop.column-box(heading: "Benchmarks")[
-    We benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm`, and `igraph` on parent and ancestor queries in large DAGs. 
-    `caugi` consistently achieved lower computation times across different graph sizes and average degrees.
+    We benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm`, and `igraph` on parent and ancestor queries in DAGs with 100 to 10,000 nodes.
+    The comparison used dense and moderately sparse settings, with average degree 5 and 10, and repeated each query many times to estimate median runtime.
+    `caugi` consistently achieved lower computation times across graph sizes and degree settings.
   
   #image("parents_children_benchmark.svg", width: 100%)
   ]
