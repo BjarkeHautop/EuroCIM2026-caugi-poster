@@ -2,7 +2,11 @@
 
 #let spacing = 1.2em
 #set page("a0", margin: 1.5cm)
-#pop.set-poster-layout(pop.layout-a0)
+#let my-layout = pop.layout-a0 + (
+  body-size: 38pt
+)
+
+#pop.set-poster-layout(my-layout)
 #pop.set-theme(pop.uni-fr)
 
 #set text(size: pop.layout-a0.at("body-size"))
@@ -60,7 +64,7 @@
       plot(cg)
       ```
       #colbreak()
-      #image("dag.png", width: 55%)
+      #image("dag.png", width: 80%)
     ])
   ]
 
@@ -92,12 +96,10 @@
 
   #colbreak()
   #pop.column-box(heading: "Benchmarks")[
-    We benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm` and `igraph` for common graph queries on randomly generated DAGs of varying sizes.
+    We benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm`, and `igraph` on parent and ancestor queries in large DAGs. 
+    `caugi` consistently achieved lower computation times across different graph sizes and average degrees.
   
-  #image("parameterized-benchmark-parents-children.png", width: 100%)
-
-  #image("benchmark-ancestors-decendants.png", width: 60%)
-
+  #image("parents_children_benchmark.svg", width: 100%)
   ]
   #pop.column-box(heading: "Contact", stretch-to-next: true)[
     - Pkgdown site: #link("https://caugi.org/")[caugi.org]
