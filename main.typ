@@ -116,7 +116,7 @@
     ].
       - We report median runtime from bench package.
     - `caugi` consistently achieved the lowest computation times across graph sizes and degree settings.
-    - Additional queries (ancestors, descendants, d-separation) showed the same ranking, with `caugi` often around an order of magnitude faster.
+    - Additional queries (ancestors, descendants, d-separation, etc.) show similar performance advantages for `caugi`.
   #image("parents_children_benchmark.svg", width: 100%)
   ]
   #pop.column-box(heading: "Contact", stretch-to-next: true)[
