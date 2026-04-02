@@ -1,5 +1,11 @@
 set.seed(1405)
 
+cg <- caugi(
+  A %-->% B + C,
+  B %-->% D,
+  C %-->% D
+)
+plot(cg)
 library(ggplot2)
 
 generate_graphs <- function(n, m, seed = NULL) {

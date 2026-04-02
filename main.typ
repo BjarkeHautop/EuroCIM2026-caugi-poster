@@ -69,18 +69,20 @@
     ])
   ]
 
-  #pop.column-box(heading: "Typical Workflow")[
-    - Build the graph once using a formula that mirrors the causal structure.
-    - Assign a graph class to enforce the right structural constraints from the start.
-    - Run repeated queries such as ancestry, neighborhoods, and adjustment sets.
-    - Export to common ecosystems when you need to compare with existing tooling.
-  ]
-
   #pop.column-box(heading: "Querying and Metrics")[
     - *Relational queries*: `parents()`, `ancestors()`, `neighbors()`, etc.  
     - *Structural queries*: `is_acyclic()`, `is_cpdag()`, etc.  
     - *Causal queries*: `adjustment_set()`, `d_separated()`, etc.  
     - *Graph metrics*: `shd()`, `aid()`, etc.
+    
+    *Example queries:*
+    ```R
+    > parents(cg, "D")
+    [1] "B" "C"
+    
+    > d_separated(cg, "A", "D", Z = c("B", "D"))
+    [1] TRUE
+    ```
   ]
 
   #pop.column-box(heading: "How it Works", stretch-to-next: true)[
@@ -107,10 +109,14 @@
   ]
 
   #pop.column-box(heading: "Benchmarks")[
-    We benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm`, and `igraph` on parent and ancestor queries in DAGs with 100 to 10,000 nodes.
-    The comparison used dense and moderately sparse settings, with average degree 5 and 10, and repeated each query many times to estimate median runtime.
-    `caugi` consistently achieved lower computation times across graph sizes and degree settings.
-  
+    - Benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm`, and `igraph` for parent and child queries on DAGs #footnote[
+      Benchmark environment: R 4.5.3, x86_64-pc-linux-gnu, Linux Mint 22.3,
+      CPU: AMD Ryzen 7 8845HS, RAM: 14Gi.
+      Using bench package for benchmarking.
+    ].
+      - We report median runtime from bench package.
+    - `caugi` consistently achieved the lowest computation times across graph sizes and degree settings.
+    - Additional queries (ancestors, descendants, d-separation) showed the same ranking, with `caugi` often around an order of magnitude faster.
   #image("parents_children_benchmark.svg", width: 100%)
   ]
   #pop.column-box(heading: "Contact", stretch-to-next: true)[
