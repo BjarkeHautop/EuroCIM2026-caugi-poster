@@ -1,12 +1,12 @@
-#import "@preview/peace-of-posters:0.5.6" as pop
+#import "@preview/peace-of-posters:0.6.0" as pop
 
 #let spacing = 1.2em
 #set page("a0", margin: 1.5cm)
-#let my-layout = pop.layout-a0 + (
-  body-size: 33pt
-)
+// #let my-layout = pop.layout-a0 + (
+//   body-size: 33pt
+// )
 
-#pop.set-poster-layout(my-layout)
+// #pop.set-poster-layout(my-layout)
 #pop.set-theme(pop.uni-fr)
 
 #set text(size: pop.layout-a0.at("body-size"))
@@ -16,8 +16,11 @@
 #set block(spacing: box-spacing)
 #pop.update-poster-layout(spacing: box-spacing)
 
+#set text(font: "New Computer Modern")
+#show raw: set text(font: "New Computer Modern Mono")
+
 #pop.title-box(
-  "caugi: fast and flexible causal graph interface for R",
+  text(weight: "bold")[caugi: Fast and Flexible Causal Graph Interface for R],
   authors: [
     Frederik Fabricius Bjerre¹²,
     Johan Larsson²,
@@ -27,33 +30,37 @@
   institutes: [
     ¹ Section of Biostatistics, University of Copenhagen, \
     ² Department of Mathematical Sciences, University of Copenhagen, \
-    #super[†] #link("bjarke.hautop@gmail.com")
+    #super[†] #link("bjarke.kristensen@sund.ku.dk")
   ],
-  keywords: "R package, causal inference",
-  logo: image("logo_backup.svg", width: 130%),
+  // keywords: "R package, causal inference",
+  logo: image("logo_backup.svg", width: 105%),
 )
 
 #columns(2,[
 
   #pop.column-box(heading: "Motivation")[
-    - Existing packages use low-level representations (e.g., adjacency matrices) and are not specialized for causal graphs.
-    - Causal workflows often jump between graph objects, adjacency matrices, and package-specific APIs.
-    - *Goal:* provide a graph interface that is expressive,
-      safe, and efficient for causal inference.
+    - Existing packages often rely on low-level representations (e.g., adjacency matrices) and are not built specifically for causal graphs.
+    - Causal workflows often bounce between graph objects, adjacency matrices, and package-specific APIs.
+    - *caugi delivers* an expressive, safe, and efficient graph interface for causal inference.
   ]
 
   #pop.column-box(heading: "Key Contributions")[
-    - *High-performance backend:* Rust implementation with efficient graph
+    - *High-performance backend:* Rust implementation for fast, memory-safe graph
       traversal.
-    - *Type-safe graph classes:* Enforce DAG, PDAG, ADMG,
-      UG constraints at the graph level.
-    - *Expressive syntax:* Compose graphs with concise R formulas.
-    - *Scalable queries:* Efficient evaluation of ancestry and neighborhood
-      relations in large graphs.
+    - *Type-safe graph classes:* DAG, PDAG, ADMG,
+      and UG constraints are enforced at the graph level.
+    - *Expressive syntax:* Compose graphs with concise R formulas that read naturally.
+    - *Scalable queries:* Efficient ancestry and neighborhood
+      relations on large graphs.
   ]
 
   #pop.column-box(heading: "Basic Usage")[
     #columns(2, [
+      Available on CRAN:
+      ```R
+      install.packages("caugi")
+      library(caugi)
+      ```
       Syntax like a picture in your head:
       ```R
       cg <- caugi(
@@ -100,12 +107,12 @@
   
   #colbreak()
 
-  #pop.column-box(heading: "Graph-class Safe")[
-    - Think type safety, but for graphs.
+  #pop.column-box(heading: "Graph-Class Safe")[
+    - Type safety, but for graphs.
     - Supports DAGs, PDAGs, ADMGs, UGs, and unknown graphs.
     - All graph modifications are checked against class constraints.
-      - E.g., adding an edge that creates a cycle in a DAG is prevented.
-    - Ensures reliable, consistent graph state throughout analysis.
+      - For example, adding an edge that creates a cycle in a DAG is prevented.
+    - Keeps graph state reliable and consistent throughout analysis.
   ]
 
   #pop.column-box(heading: "Benchmarks")[
@@ -115,8 +122,8 @@
       Using bench package for benchmarking.
     ].
       - We report median runtime from bench package.
-    - `caugi` consistently achieved the lowest computation times across graph sizes and degree settings.
-    - Additional queries (ancestors, descendants, d-separation, etc.) show similar performance advantages for `caugi`.
+    - `caugi` consistently delivered the lowest computation times across graph sizes and degree settings.
+    - Additional queries (ancestors, descendants, d-separation, etc.) show the same strong performance profile.
   #image("parents_children_benchmark.svg", width: 100%)
   ]
   #pop.column-box(heading: "Contact", stretch-to-next: true)[
@@ -127,13 +134,20 @@
   ]
 ])
 
+#pop.update-theme(
+    heading-box-args: (
+        fill: rgb(255, 255, 255),
+        stroke: rgb(25, 25, 25),
+    )
+)
+
 #pop.bottom-box(
 	stack(
     dir: ltr,
     h(0.5fr),
 		image(height: 120pt, "eurocim-icon.gif"),
     h(1fr),
-		image(height: 120pt, "ku-logo.png"),
+		image(height: 120pt, "ku-logo.pdf"),
     h(1fr),
 		image("smart-biomed.png", height: 120pt),
     h(0.5fr)
