@@ -33,7 +33,7 @@
     #super[†] #link("bjarke.kristensen@sund.ku.dk")
   ],
   // keywords: "R package, causal inference",
-  logo: image("logo_backup.svg", width: 105%),
+  logo: image("logo_backup.svg", width: 132%),
 )
 
 #columns(2,[
