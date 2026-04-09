@@ -1,4 +1,6 @@
 set.seed(1405)
+library(caugi)
+library(ggplot2)
 
 cg <- caugi(
   A %-->% B + C,
@@ -6,98 +8,24 @@ cg <- caugi(
   C %-->% D
 )
 plot(cg)
-library(ggplot2)
 
 generate_graphs <- function(n, m, seed = NULL) {
-  cg <- caugi::generate_graph(n = n, m = m, class = "DAG", seed = seed)
-  ig <- caugi::as_igraph(cg)
-  ggmg <- caugi::as_adjacency(cg)
-  bng <- caugi::as_bnlearn(cg)
-  dg <- caugi::as_dagitty(cg)
+  cg <- generate_graph(n = n, m = m, class = "DAG", seed = seed)
+  ig <- as_igraph(cg)
+  ggmg <- as_adjacency(cg)
+  bng <- as_bnlearn(cg)
+  dg <- as_dagitty(cg)
   list(cg = cg, ig = ig, ggmg = ggmg, bng = bng, dg = dg)
 }
 
-n <- 1000
-graphs <- generate_graphs(n, m = n * 100, seed = 1405) # dense graph
-cg <- graphs$cg
-ig <- graphs$ig
-ggmg <- graphs$ggmg
-bng <- graphs$bng
-dg <- graphs$dg
-
-test_node_name <- "V1"
-
-bm_parents_children <- bench::mark(
-  caugi = {
-    caugi::parents(cg, test_node_name)
-    caugi::children(cg, test_node_name)
-  },
-  igraph = {
-    igraph::neighbors(ig, test_node_name, mode = "in")
-    igraph::neighbors(ig, test_node_name, mode = "out")
-  },
-  bnlearn = {
-    bnlearn::parents(bng, test_node_name)
-    bnlearn::children(bng, test_node_name)
-  },
-  ggm = {
-    ggm::pa(test_node_name, ggmg)
-    ggm::ch(test_node_name, ggmg)
-  },
-  dagitty = {
-    dagitty::parents(dg, test_node_name)
-    dagitty::children(dg, test_node_name)
-  },
-  check = FALSE, # igraph returns igraph object
-  max_iterations = 1000
+algo_colors <- c(
+  caugi = "#1b9e77",
+  igraph = "#d95f02",
+  bnlearn = "#7570b3",
+  dagitty = "#e7298a"
 )
 
-plot(bm_parents_children)
-
-bm_parents_children_np <-
-  bench::press(
-    n = c(100, 500, 1000, 2500, 5000, 7500, 10000),
-    d = c(5, 10),
-    {
-      m <- as.integer(d * n)
-
-      graphs <- generate_graphs(n, m = m, seed = 1405 + n + d)
-      cg <- graphs$cg
-      ig <- graphs$ig
-      ggmg <- graphs$ggmg
-      bng <- graphs$bng
-      dg <- graphs$dg
-
-      test_node_name <- "V1"
-
-      bench::mark(
-        caugi = {
-          caugi::parents(cg, test_node_name)
-          caugi::children(cg, test_node_name)
-        },
-        igraph = {
-          igraph::neighbors(ig, test_node_name, mode = "in")
-          igraph::neighbors(ig, test_node_name, mode = "out")
-        },
-        bnlearn = {
-          bnlearn::parents(bng, test_node_name)
-          bnlearn::children(bng, test_node_name)
-        },
-        ggm = {
-          ggm::pa(test_node_name, ggmg)
-          ggm::ch(test_node_name, ggmg)
-        },
-        dagitty = {
-          dagitty::parents(dg, test_node_name)
-          dagitty::children(dg, test_node_name)
-        },
-        check = FALSE
-      )
-    },
-    .quiet = TRUE
-  )
-
-plot_parameterized_benchmark <- function(bm) {
+plot_parameterized_benchmark <- function(bm, title = NULL) {
 
   bm_mod <- within(
     bm,
@@ -108,29 +36,133 @@ plot_parameterized_benchmark <- function(bm) {
   )
 
   ggplot(bm_mod, aes(n, median, color = expr)) +
-    geom_line() +
-    geom_point() +
+    geom_line(linewidth = 1.2) +
+    geom_point(size = 2.5) +
     scale_y_log10() +
-    facet_wrap(~d, labeller = labeller(d = function(x) paste0("avg. degree = ", x))) +
+    scale_color_manual(values = algo_colors) +
     labs(
-      x = "n",
-      y = "Time (s)",
+      title = title,
+      x = "Number of nodes",
+      y = "Time (seconds, log scale)",
       color = NULL
     ) +
-    theme(
-      # Increase facet label size
-      strip.text = element_text(size = 12),
 
-      # Add space between panels
-      panel.spacing = unit(1, "lines")
+    theme_minimal(base_size = 16) +
+    theme(
+      # --- Title (important for poster) ---
+      plot.title = element_text(size = 22, face = "bold", hjust = 0.5),
+
+      axis.title = element_text(size = 18),
+      axis.text  = element_text(size = 14),
+      legend.text = element_text(size = 14),
+
+      legend.position = "top",
+      legend.direction = "horizontal",
+
+      panel.grid.minor = element_blank(),
+      panel.grid.major.x = element_blank(),
+      panel.grid.major.y = element_line(linewidth = 0.3),
+
+      plot.margin = margin(10, 15, 10, 10)
     )
 }
 
-p <- plot_parameterized_benchmark(bm_parents_children_np)
-p
+bm_ancestors_descendants <-
+  bench::press(
+    n = c(100, 500, 1000, 2500, 5000),
+    d = 10,
+    {
+      m <- as.integer(d * n)
+
+      graphs <- generate_graphs(n, m = m, seed = 1405 + n + d)
+      cg <- graphs$cg
+      ig <- graphs$ig
+      bng <- graphs$bng
+      dg <- graphs$dg
+
+      test_node_name <- "V1"
+
+      bench::mark(
+        caugi = {
+          caugi::ancestors(cg, test_node_name)
+          caugi::descendants(cg, test_node_name)
+        },
+
+        igraph = {
+          igraph::subcomponent(ig, test_node_name, mode = "in")
+          igraph::subcomponent(ig, test_node_name, mode = "out")
+        },
+
+        bnlearn = {
+          bnlearn::ancestors(bng, test_node_name)
+          bnlearn::descendants(bng, test_node_name)
+        },
+
+        dagitty = {
+          dagitty::ancestors(dg, test_node_name)
+          dagitty::descendants(dg, test_node_name)
+        },
+
+        check = FALSE,
+        min_iterations = 50
+      )
+    },
+    .quiet = TRUE
+  )
+
+plot_parameterized_benchmark(bm_ancestors_descendants)
+
+bm_dsep <-
+  bench::press(
+    n = c(100, 500, 1000, 2500, 5000),
+    d = 10,
+    {
+      m <- as.integer(d * n)
+
+      graphs <- generate_graphs(n, m = m, seed = 1405 + n + d)
+      cg <- graphs$cg
+      bng <- graphs$bng
+      dg <- graphs$dg
+
+      x <- "V1"
+      y <- "V2"
+      z <- paste0("V", 3:10)
+
+      bench::mark(
+        caugi = caugi::d_separated(cg, x, y, z),
+        bnlearn = bnlearn::dsep(bng, x, y, z),
+        dagitty = dagitty::dseparated(dg, x, y, z),
+        check = FALSE,
+        min_iterations = 50
+      )
+    },
+    .quiet = TRUE
+  )
+
+plot_parameterized_benchmark(bm_dsep)
+
+p1 <- plot_parameterized_benchmark(
+  bm_ancestors_descendants,
+  title = "Ancestors and Descendants"
+)
+p2 <- plot_parameterized_benchmark(
+  bm_dsep,
+  title = "d-separation"
+)
+p1
+p2
+
 ggsave(
-  filename = "parents_children_benchmark.svg",
-  plot = p,
+  filename = "ancesors_descendants.svg",
+  plot = p1,
+  width = 12,
+  height = 7,
+  units = "in"
+)
+
+ggsave(
+  filename = "dsep.svg",
+  plot = p2,
   width = 12,
   height = 7,
   units = "in"

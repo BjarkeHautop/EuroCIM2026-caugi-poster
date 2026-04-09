@@ -72,7 +72,7 @@
       plot(cg)
       ```
       #colbreak()
-      #image("dag.png", width: 60%)
+      #image("dag.png", width: 80%)
     ])
   ]
 
@@ -116,19 +116,15 @@
   ]
 
   #pop.column-box(heading: "Benchmarks")[
-    - Benchmarked `caugi` against `bnlearn`, `dagitty`, `ggm`, and `igraph` for parent and child queries on DAGs #footnote[
-      Benchmark environment: R 4.5.3, x86_64-pc-linux-gnu, Linux Mint 22.3,
-      CPU: AMD Ryzen 7 8845HS, RAM: 14Gi.
-      Using bench package for benchmarking.
-    ].
-      - We report median runtime from bench package.
-    - `caugi` consistently delivered the lowest computation times across graph sizes and degree settings.
-    - Additional queries (ancestors, descendants, d-separation, etc.) show the same strong performance profile.
-  #image("parents_children_benchmark.svg", width: 100%)
+    - Benchmarked `caugi` against `bnlearn`, `dagitty`, and `igraph`.
+      - We report median runtime.
+    - `caugi` consistently an order or two faster than alternatives.
+  #set align(center)
+  #image("dsep.svg", width: 80%)
+  #image("ancestors_descendants.svg", width: 80%)
   ]
   #pop.column-box(heading: "Contact", stretch-to-next: true)[
     - Pkgdown site: #link("https://caugi.org/")[caugi.org]
-    - GitHub: #link("https://github.com/frederikfabriciusbjerre/caugi/")[frederikfabriciusbjerre/caugi]
     #set align(center)
     #image("qr-url.pdf", width: 50%)
   ]
