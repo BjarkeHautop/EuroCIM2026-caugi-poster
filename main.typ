@@ -2,11 +2,7 @@
 
 #let spacing = 1.2em
 #set page("a0", margin: 1.5cm)
-// #let my-layout = pop.layout-a0 + (
-//   body-size: 33pt
-// )
 
-// #pop.set-poster-layout(my-layout)
 #pop.set-theme(pop.uni-fr)
 
 #set text(size: pop.layout-a0.at("body-size"))
@@ -41,7 +37,7 @@
   #pop.column-box(heading: "Motivation")[
     - Existing packages often rely on low-level representations (e.g., adjacency matrices) and are not built specifically for causal graphs.
     - Causal workflows often bounce between graph objects, adjacency matrices, and package-specific APIs.
-    - *caugi delivers* an expressive, safe, and efficient graph interface for causal inference.
+    - *_caugi_ delivers* an expressive, safe, and efficient graph interface for causal inference.
   ]
 
   #pop.column-box(heading: "Key Contributions")[
@@ -116,9 +112,9 @@
   ]
 
   #pop.column-box(heading: "Benchmarks")[
-    - Benchmarked `caugi` against `bnlearn`, `dagitty`, and `igraph`.
+    - Benchmarked _caugi_ against _bnlearn_, _dagitty_, and _igraph_.
       - We report median runtime.
-    - `caugi` consistently an order or two faster than alternatives.
+    - _caugi_ consistently an order or two faster than alternatives.
   #set align(center)
   #image("dsep.svg", width: 80%)
   #image("ancestors_descendants.svg", width: 80%)
