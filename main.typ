@@ -68,7 +68,7 @@
       plot(cg)
       ```
       #colbreak()
-      #image("dag.png", width: 80%)
+      #image("dag.pdf", width: 80%)
     ])
   ]
 
